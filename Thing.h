@@ -15,7 +15,7 @@ class Thing{
 		std::vector<std::string> characteristics;
 		int lineNum;
 	public:
-		Thing(std::string name, std::vector<std::string>/*, int*/);
+		Thing(std::string name, std::vector<std::string>, int);
 		std::string getName();
 		void setName(std::string);
 		std::vector<std::string> getChara();

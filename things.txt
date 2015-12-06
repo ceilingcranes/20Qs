@@ -1,14 +1,19 @@
-cheeta@four legs,spots,fast,tail,fur,sharp teeth
+cheeta@four legs,spots,fast,sharp teeth,tail,fur
 human@two legs,intelligent,opposable thumbs
 raptor@two legs,intelligent,extinct,tail,scales,sharp teeth
 chair@four legs,inanimate
+coin@inanimate,metal
+car@fast,metal,inanimate,shiny
 cup@inanimate
 dog@four legs,tail,fur,sharp teeth,domesticated
-plane@inanimate,wings,metal
+plane@inanimate,wings,metal,fast
 computer@inanimate,metal,intelligent
 water@liquid,wet
 fish@scales,wet,tail
-beer@liquid,wet,alcholic
+beer@liquid,wet,alcoholic
 meglodon@scales,wet,tail,extinct,sharp teeth
 sabertooth tiger@fur,tail,extinct,sharp teeth
 housecat@domesticated,four legs,tail,fur,sharp teeth
+
+
+ring@inanimate,metal,shiny

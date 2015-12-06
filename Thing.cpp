@@ -6,10 +6,10 @@
 
 using namespace std;
 
-Thing::Thing(string n, vector<string> ch/*, int i*/){
+Thing::Thing(string n, vector<string> ch, int i){
 	name=n;
 	characteristics=ch;
-	/*lineNum=i;*/
+	lineNum=i;
 	cout << "Thing created in Thing.cpp. Chara:" << endl;
 	for(int i=0; i< ch.size(); i++){
 		cout << ch[i] << endl;

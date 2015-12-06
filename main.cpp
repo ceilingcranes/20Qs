@@ -16,6 +16,10 @@ string addToLine(string, vector<string>);
 string trim(string);
 int max(int, int);
 bool existsInList(Thing t, vector<Thing> v);
+void addNewThingToFile(Thing t, string filename);
+bool stringExistsInList(string t, vector<string> v);
+
+
 
 /**
  * add in a loop to ask if it has charas
@@ -59,8 +63,10 @@ int main(int argc, char* argv[])
 	//Keep track of each chara and check each new thing
 	vector <Chara> charas; 
 	vector <Chara> noChara; // charas the thing doesn't have.
+	int tracker=0;
 	for(int f=0; f<ch.size(); f++) //looping through each chara
 	{	
+		tracker++;
 		bool answered=false;
 		string answer;
 		while(!answered){
@@ -80,6 +86,8 @@ int main(int argc, char* argv[])
 				int hasCharaSize=charas.size();
 				int noCharaSize=noChara.size();
 				//CHECK TO SEE IF IT EXISTS IN THE LIST 
+				bool hasChara=false;
+				bool hasNoChara=false;
 				for(int n=0; n < max(hasCharaSize, noCharaSize); n++) //loop through the list of charas
 				{
 					string charaInList="";
@@ -90,8 +98,7 @@ int main(int argc, char* argv[])
 					if(n<noCharaSize){
 						charaInNoList=noChara[n].toString();
 					}
-					bool hasChara=false;
-					bool hasNoChara=false;
+
 					for(int rr=0; rr< charasOfThing.size(); rr++) //go through the charas of each thing
 					{
 						string charaOfThing=charasOfThing[rr];
@@ -101,23 +108,25 @@ int main(int argc, char* argv[])
 								cout << "comparison returns true." << endl;
 								hasChara=true; 
 								if(n>noCharaSize){
-									rr=charasOfThing.size();
+									//rr=charasOfThing.size()+1;
 								}
 							}
-							cout << "Chara of Thing: " << charaOfThing << " Chara in List: " << charaInList << endl;
+							cout << "Chara of Thing: " << charaOfThing << " Chara in List: " << charaInList <<" has chara " << hasChara<< endl;
 						}
 						if(charaInNoList!=""){
-							cout << "Chara of Thing: " << charaOfThing << " Chara in No List: " << charaInNoList << endl;
+							
 							if(charaOfThing==charaInNoList){ //if it has a chara that's the user answered no to
 								hasNoChara=true;
-								rr=charasOfThing.size();
+								//rr=charasOfThing.size()+1;
 							}
+							cout << "Chara of Thing: " << charaOfThing << " Chara in No List: " << charaInNoList << " hasNoChara " << hasNoChara<< endl;
 						}
 					}
+					cout << "hasChara: " << hasChara << " Has no chara: " << hasNoChara << endl;
 					if(hasChara==false||hasNoChara==true){ //if it's missing a chara in charas, or has a chara
 						addToList=false;					//in nocharas don't add to possibleThings
 						cout << "Not adding to list" << endl;
-						n=charas.size();
+						//n=charas.size()+1;
 					}
 				}
 				if(addToList){
@@ -157,16 +166,18 @@ int main(int argc, char* argv[])
 			}
 		}
 		
-		else if(answer=="n"||answer=="no"||answer=="N"||answer=="No") //fix this
+		else if(answer=="n"||answer=="no"||answer=="N"||answer=="No") 
 		{
 			answered=true;
 			noChara.push_back(ch[f]);
 			for(int w=0; w<charaThing.size(); w++)
-			{ //THIS IS SO EFFICIENT (not)
+			{ 
 				for(int y=0; y< possibleThings.size(); y++)
 				{
 					if(possibleThings[y].toString()==charaThing[w].toString()){
+						cout << "Erasing: " << possibleThings[y].toString()<< endl;
 						possibleThings.erase(possibleThings.begin()+y);
+						
 						cout << "Possible things: " << endl;
 						for(int r=0; r< possibleThings.size(); r++){
 							cout << possibleThings[r].toString() << endl;
@@ -178,83 +189,144 @@ int main(int argc, char* argv[])
 		/** make sure you make it so that if there isn't anything in the list it makes a new one
 		 * make it a method call most likly
 		 * */
-		if(possibleThings.size()==1)
+		if(possibleThings.size()==1||tracker==(ch.size())) 
 		{
-			cout << "Is your thing: " << possibleThings[0].toString() << "?" << endl;
-			cin>>answer;
-			if(answer=="y"||answer=="yes"||answer=="Y"||answer=="Yes")
+			cout << "End of the line" << endl;
+			cin.ignore();
+			answered=true;
+			string won="";
+			if(tracker==(ch.size())){
+				won="no";
+			}
+			else{
+				cout << "Is your thing: " << possibleThings[0].toString() << "?" << endl;
+				getline(cin,won);
+				cout << "Answer: " << won << endl;
+				
+			}
+			if(won=="y"||won=="yes"||won=="Y"||won=="Yes")
 			{
 				cout << "I WIN! :D" <<endl;
-				f=ch.size();
+				ch.clear();
 			}
 		
-			else if(answer=="n"||answer=="no"||answer=="N"||answer=="No")
+			else if(won=="n"||won=="no"||won=="N"||won=="No") 
 			{
-				cout << "What were you thinking of?" << endl;
-				string newThing;
-				getline(cin, newThing);
-				bool existsInFile=false;
-				for(int j=0; j< thingList.size(); j++)
-				{
-					
-					Thing existing=thingList[j];
-					
-					if(newThing==existing.toString()) //thing is already in file
-					{ 
-						existsInFile=true;
-						cout << existing.toString() << " already exists in my system." << endl;
-						vector<string> newCharas;
-						string chara;
-						string going;
-	
-						while(going!="q"||newCharas.size()==0) //adding chara to file
-						{ 
-							cout << existing.toString() << " already has the characteristics:" << endl;
-							existing.printChara();
-							cout << "Please enter a new characteristic." << endl;
-							getline(cin, chara); 
-							newCharas.push_back(chara);
-							existing.addChara(chara); 
-							cout << "If you are done entering characteristics, type 'q'. Otherwise, hit enter to continue." << endl;
-							cin>>going;
-						}
-					
+				//cin.ignore();
+				//if(tracker==ch.size()){ //TAKE THIS OUT MAYBE
+					cout << "What were you thinking of?" << endl;
+					string newThing;
+					getline(cin, newThing);
+					cout << "New Thing: " << newThing << endl;
+					int indexInFile=-1;
+					cout << "Thinglist Size: " << thingList.size() << endl;
+					for(int j=0; j< thingList.size(); j++) //I have some problems with this loop
+					{
+						answered=true;
+						cout << "checking existance" << endl;
 						
-						string line=getLineFromIndex(filename, existing.getLineNum());
-						line=addToLine(line, newCharas);
-						int test=appFile(filename, line, existing.getLineNum());
-						if(test == -1)
+						
+						Thing existing=thingList[j];
+						cout << "Existing: " << thingList[j].toString() << endl;
+						
+						if(newThing==existing.toString()) //thing is already in file
 						{
-							cout << "ERROR!!!" << endl;
+							indexInFile=j;
+							
 						}
-						
+						else
+							cout << "Doesn't exist here" << endl;
 					}
+				cout << "Got out of existing loop" << endl;
+				if(indexInFile<0) //if it doesn't exist already
+				{ 
+					cout << "Chara size: " << charas.size();
+					cout << "Didn't find in file" << endl;
 					
+					vector<string> newestCharas; 
+
+					for(int kk=0;kk<charas.size(); kk++){
+						cout << "Adding: " << charas[kk].toString();
+						newestCharas.push_back(charas[kk].toString());
+					}
+					cout << "Lists copied" << endl;
+					string going="";
+
+					while(going!="q"||newestCharas.size()==0)
+					{
+						string chara="";
+						cout << "Please enter a new characteristic." << endl;
 						
-						j=thingList.size(); //to exit loop
-					}	
-			/*if(!existsInFile) //if it doesn't exist already
-			{ //INCOMPLETE!!!!
-				vector<string> newCharas; //same name because I love confusion
-				
-				while(newCharas.size()==0)
-				{
-						while(going!="q")
-						{ 
-							cout << "Please enter a new characteristic." << endl;
-							getline(cin, chara); 
-							newCharas.push_back(chara);
-							existing.addChara(chara); 
-							cout << "If you are done entering characteristics, type 'q'. Otherwise, hit enter to continue." << endl;
-							cin>>going;
+						getline(cin, chara);
+						if(!stringExistsInList(chara, newestCharas)){
+							newestCharas.push_back(chara); 
 						}
+						cout << "New chara: " << chara << endl;
+						cout << "If you are done entering characteristics, type 'q'. Otherwise, hit enter to continue." << endl;
+						cin>>going;
+						cin.ignore();
+					}
+		
+					cout << "New thing created" << endl;
+					addNewThingToFile(Thing(newThing, newestCharas, thingList.size()+1), filename);
+					
+					ch.clear();
 				}
-			}*/
-			
+				else  //HEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+				{
+					Thing existing=thingList[indexInFile];
+					cout << existing.toString() << " already exists in my system." << endl;
+					vector<string> newestCharas; 
+
+					for(int kk=0;kk<charas.size(); kk++){
+						cout << "Adding: " << charas[kk].toString();
+						newestCharas.push_back(charas[kk].toString());
+					}
+					cout << "Lists copied" << endl;
+					string going="";
+
+					while(going!="q"||newestCharas.size()==0)
+					{
+						string chara="";
+						cout << "Please enter a new characteristic." << endl;
+						
+						getline(cin, chara);
+						if(!stringExistsInList(chara, newestCharas)){
+							newestCharas.push_back(chara); 
+						}
+						cout << "New chara: " << chara << endl;
+						cout << "If you are done entering characteristics, type 'q'. Otherwise, hit enter to continue." << endl;
+						cin>>going;
+						cin.ignore();
+					}
+					int index=existing.getLineNum();
+					Thing testingThing=thingList[index];
+					vector<string> testingCharas=testingThing.getChara();
+					for(int er=0; er<newestCharas.size(); er++){
+						for(int lm=0; lm< testingCharas.size();lm++){
+							if(newestCharas[er]==testingCharas[lm]){
+								newestCharas.erase(newestCharas.begin()+er);
+							}
+						}
+					}
+		
+						
+							
+					string line=getLineFromIndex(filename, existing.getLineNum());
+					line=addToLine(line, newestCharas);
+					int test=appFile(filename, line, existing.getLineNum()); 
+					if(test == -1)
+					{
+						cout << "ERROR!!!" << endl;
+					}
+					ch.clear(); //Exits loop
+				//}
+			}
 		}
-			
+
 	}
 }
+
 }
 	outstream.close();
 	return 0;
@@ -342,7 +414,7 @@ vector<Thing> getThings(string filename)
 				charas.push_back(line);
 				if(charas.size()>0){
 					cout << "Attempting creating, line num: " << i << endl;
-					thingList.push_back(Thing(thingName, charas/*, i*/)); //getting seg faults on this line when index==2
+					thingList.push_back(Thing(thingName, charas, i)); //getting seg faults on this line when index==2
 					cout << "New thing created, line num: " << i << endl;
 					i++;
 				}
@@ -376,9 +448,10 @@ int appFile(string filename, string newLine, int linenum){
 	while( getline(infile, tempStr) ){
 		if(l==linenum){
 			tempStr=newLine;
+			tempStr+="\n";
 		}
 		l++;
-		tempStr+="\n";
+		
 		outfile << tempStr;
 	}
 	rename("temp.txt", filename.c_str());
@@ -415,7 +488,7 @@ string getLineFromIndex(string filename, int linenum){
 
 string addToLine(string line, vector<string> v){
 	for(int i=0; i < v.size(); i++){
-		line=line+v[i];
+		line=line+","+v[i];
 	}
 	return line;
 }
@@ -445,4 +518,37 @@ bool existsInList(Thing t, vector<Thing> v){
 	}
 	return b;
 }
+bool stringExistsInList(string t, vector<string> v){
+	bool b=false;
+	for(int i=0; i<v.size(); i++){
+		if(t==v[i]){
+			return true;
+		}
+	}
+	return b;
+}
+
+void addNewThingToFile(Thing t, string filename){
+	ofstream ofile(filename, ios::app);
+	if(!ofile.is_open()){
+		cout << "Error opening file." << endl;
+		return;
+	}
+	string addedString=t.getName()+"@";
+	vector<string> charas=t.getChara();
+	string str="";
+	for(int i=0; i< charas.size(); i++){
+		if(i==0){
+			str+=charas[i];
+		}
+		else
+			str=str+","+charas[i];
+		
+	}
+	addedString+=(str+"\n");
+	ofile<<addedString;
+	ofile.close();
+	cout << "Added to file " << endl;
+}
+
 
